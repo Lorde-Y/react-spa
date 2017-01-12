@@ -57,7 +57,6 @@ const config = {
 				]
 			},
 			// https://webpack.js.org/guides/migrating/ #Chaining loaders & https://github.com/postcss/postcss-loader 
-			// when you change your css and css-loader doesn't set modules,  hmr is not working.
 			{
 				test: /\.less$/,
 				// use: [
@@ -69,7 +68,7 @@ const config = {
 				// DEBUG
 				use: [
 					'style-loader',
-					'css-loader?modules',
+					'css-loader',
 					'postcss-loader',
 					'less-loader'
 				],

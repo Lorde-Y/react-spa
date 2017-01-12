@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 
 import Text from 'component/text';
 
-import styles from './canvas.less';
+// import styles from './canvas.less';
+import './canvas.less';
 
 class Canvas extends Component {
 	render() {
 		return (
-			<div className={styles.canvas} >
-				<div style={{fontWeight: "bold"}}>hello world!!!</div>
-				<div className={styles.fuck}></div>
+			<div className='canvas' >
+				<div style={{fontWeight: "bold"}}>Hello world,hello React!</div>
 				<Text />
 			</div>
 		)
