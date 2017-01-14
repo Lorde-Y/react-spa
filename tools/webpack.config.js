@@ -94,6 +94,7 @@ const config = {
 		modules: [srcPath, "node_modules"],
 		extensions: ['.js', '.jsx'],
 		alias: {
+			action: path.resolve(srcPath, './action'),
 			component: path.resolve(srcPath, './component'),
 			container: path.resolve(srcPath, './container')
 		}

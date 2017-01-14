@@ -1,20 +1,18 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-
 import * as allReducers from '../reducer';
-console.log(allReducers)
-
-if (__dev__) {
-	console.log('production...ing.')
-}else {
-	console.log('fucking.ing.')
-}
 
 const rootReducer = combineReducers({
 	...allReducers
 });
 
-const enhacer = compose(
+// https://github.com/zalmoxisus/redux-devtools-extension
+// if env is development, then browser needs to bug, set redux-devtools.
+const composeEnhancer = __dev__ && typeof window === 'object' && 
+						window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? 
+						window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
+
+const enhacer = composeEnhancer(
 	applyMiddleware(thunk)
 );
 
