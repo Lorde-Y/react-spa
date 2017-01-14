@@ -9,3 +9,5 @@
 * npm run start (webpack-dev-server will start the project)
 
 *That's all*
+
+[Contact with me](https://twitter.com/007074Kai)

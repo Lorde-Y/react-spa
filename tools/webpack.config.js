@@ -116,6 +116,9 @@ const config = {
 				]
 			}
 		}),
+		new webpack.DefinePlugin({
+			"__dev__" : DEBUG
+		}),
 		// only when production
 		// new ExtractTextPlugin({
 		// 	filename: "style.css",
