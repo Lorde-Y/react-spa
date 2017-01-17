@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import Root from 'container/root';
 
+import './styles/app.less';
 import { AppContainer } from 'react-hot-loader';
 
 const render = (Component) => {

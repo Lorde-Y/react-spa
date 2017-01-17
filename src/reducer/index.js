@@ -1,1 +1,1 @@
-export { getToDo } from './page'
+export { page } from './page'

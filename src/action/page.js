@@ -1,10 +1,8 @@
-import { TO_DO } from '../constants';
+import { CREATE_CMP } from '../constants';
 
-
-export function toDoList() {
-	console.log('dispathc...action.')
+export function createCmp(cmpData) {
 	return {
-		type: TO_DO,
-		data: 'learn...react..ing..ing..'
+		type: CREATE_CMP,
+		cmpData
 	}
 }

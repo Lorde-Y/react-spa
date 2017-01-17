@@ -96,7 +96,8 @@ const config = {
 		alias: {
 			action: path.resolve(srcPath, './action'),
 			component: path.resolve(srcPath, './component'),
-			container: path.resolve(srcPath, './container')
+			container: path.resolve(srcPath, './container'),
+			config: path.resolve(srcPath, './config')
 		}
 	},
 	cache: DEBUG,

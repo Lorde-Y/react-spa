@@ -21,9 +21,9 @@ const config = {
 	},
 	plugins: [
 		// https://github.com/cssmagic/blog/issues/58 Loader options & minimize
-		new webpack.LoaderOptionsPlugin({
-			minimize: true
-		}),
+		// new webpack.LoaderOptionsPlugin({
+		// 	minimize: true
+		// }),
 		new webpack.DllPlugin({
 			path: path.resolve(__dirname, '../build/[name]-mainfest.json'),
 			name: "[name]_[hash]",

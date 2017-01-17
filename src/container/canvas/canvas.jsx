@@ -2,24 +2,43 @@ import React, {Component} from 'react';
 import * as actionCreators from 'action/page';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Text from 'component/text';
 
-// import styles from './canvas.less';
+import Enhancer from 'component/enhancer';
+import TextCmp from 'component/textcmp';
+
 import './canvas.less';
+
+const canvasCmps = {
+	text: Enhancer(TextCmp),
+	image: Enhancer(TextCmp),
+	btn: Enhancer(TextCmp)
+};
 
 class Canvas extends Component {
 	constructor(props) {
 		super(props);
-		console.log(props);
 	}
-	handleCanvasClick = (e)=> {
-		this.props.toDoList();
-	};
+
+	renderCmps() {
+		const { cmps } = { ...this.props.data };
+		return cmps.map((item, id)=> {
+			const Cmp = canvasCmps[item.type];
+			return (
+				<Cmp
+					key={id}
+					type={item.type}
+					data={item}
+				/>
+			)
+		})
+	}
+
 	render() {
 		return (
-			<div className='canvas' onClick={this.handleCanvasClick}>
-				<div style={{fontWeight: "bold"}}>Hello world,hello React!</div>
-				<Text />
+			<div className='canvas-container'>
+				<div className='canvas'>
+					{ this.renderCmps() }
+				</div>
 			</div>
 		)
 	}
@@ -27,7 +46,7 @@ class Canvas extends Component {
 
 function mapStateToProps(state={}) {
 	return {
-		data: {...state}
+		data: state.page
 	}
 }
 
