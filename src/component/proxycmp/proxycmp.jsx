@@ -29,9 +29,7 @@ class ProxyCmp extends Component {
 	}
 
 	handleDocumentMouseDown = (e)=> {
-		console.log('handling...document')
 		const $target = e.target;
-		console.log($target)
 		if ($target.parentNode === ReactDom.findDOMNode(this) || $target.parentNode.parentNode === ReactDom.findDOMNode(this)){
 			return
 		}
@@ -45,7 +43,6 @@ class ProxyCmp extends Component {
 			return this.setState({
 				isEditing: false
 			}, ()=> {
-				// const { type, id } = { ...this.props.currCmp };
 				const currDom = document.getElementById(`CMP_text_${currentCmp}`);
 				if (currDom) {
 					currDom.style.display = 'block';
@@ -158,50 +155,11 @@ class ProxyCmp extends Component {
 
 
 	handleProxyDoubleClick = (e)=> {
-		// const proxyText = document.getElementById('proxy-text');
 		const { type, id } = { ...this.props.currCmp };
 		const currDom = document.getElementById(`CMP_${type}_${id}`);
 		currDom.style.display = 'none';
-		this.setState({
-			isEditing: true
-		}, ()=> {
-			// let { style } = {...this.props.currCmp};
-			// const updateStyle = {
-			// 	style: {
-			// 		...style,
-			// 		display: 'none'
-			// 	}
-			// };
-			// this.props.updateCmp(updateStyle);
-		})
-	// 	console.log('proxy..click');
-	// 	const proxyText = document.getElementById('proxy-text');
-	// 	const { type, id } = { ...this.props.currCmp };
-	// 	const currDom = document.getElementById(`CMP_${type}_${id}`);
-	// 	currDom.style.display = 'none';
-	// 	const innerCmp = currDom.querySelector('.cmp-inner');
-	// 	const cls = innerCmp.getAttribute('class');
 
-	// 	const cloneNode = innerCmp.cloneNode(true);
-		
-	// 	let proxyInnerText = proxyText.querySelector('.cmp-inner');
-	// 	console.log(proxyInnerText)
-	// 	if (!proxyInnerText) {
-	// 		proxyText.appendChild(cloneNode)
-	// 	}
-
-	// 	proxyInnerText = proxyText.querySelector('.cmp-inner');
-	// 	console.log(proxyInnerText)
-	// 	proxyInnerText.setAttribute('contenteditable', true);
-
-	// 	proxyInnerText.setAttribute('class', `${cls} edit`)
-	// 	const selection = window.getSelection();
-	// 	const range = document.createRange();
-	// 	range.selectNodeContents(proxyInnerText);
-	// 	range.collapse(false);
-	// 	selection.removeAllRanges();
-	// 	selection.addRange(range);
-	// 	document.execCommand('selectAll');
+		this.setState({isEditing: true});
 
 		setTimeout(()=> {
 			removeEventsFromDocument(this.eventsMap());
