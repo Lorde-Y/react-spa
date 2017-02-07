@@ -97,7 +97,8 @@ const config = {
 			action: path.resolve(srcPath, './action'),
 			component: path.resolve(srcPath, './component'),
 			container: path.resolve(srcPath, './container'),
-			config: path.resolve(srcPath, './config')
+			config: path.resolve(srcPath, './config'),
+			utils: path.resolve(srcPath, './utils')
 		}
 	},
 	cache: DEBUG,

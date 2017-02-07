@@ -1,0 +1,82 @@
+[contenteditable] {
+	user-select: none;
+}
+.proxy-resize {
+	&.active {
+		display: block;
+	}
+	outline: none;
+	outline-color: none;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border: 1px solid #FF8533;
+	cursor: move;
+	
+	.handle-resize {
+		position: absolute;
+		// top: 0;
+		// left: 0;
+		width: 6px;
+		height: 6px;
+		margin-top: -3px;
+		margin-left: -3px;
+		// border-radius: 50%;
+		// background: #fff;
+	}
+	.origin-nw {
+		top: 2px;
+		left: 1px;
+		border-left: 2px solid #fff;
+		border-top: 2px solid #fff;
+		cursor: nw-resize;
+	}
+	.origin-n {
+		top: 2px;
+		left: 50%;
+		border-top: 2px solid #fff;
+		cursor: n-resize;
+	}
+	.origin-ne {
+		right: -1px;
+		top: 2px;
+		border-right: 2px solid #fff;
+		border-top: 2px solid #fff;
+		cursor: ne-resize;
+	}
+	.origin-e {
+		top: 50%;
+		right: -1px;
+		border-right: 2px solid #fff;
+		cursor: e-resize;
+	}
+	.origin-se {
+		right: -1px;
+		bottom: -1px;
+		border-right: 2px solid #fff;
+		border-bottom: 2px solid #fff;
+		cursor: se-resize;
+	}
+	.origin-s {
+		bottom: -1px;
+		border-bottom: 2px solid #fff;
+		left: 50%;
+		cursor: s-resize;
+	}
+	.origin-sw {
+		left: 1px;
+		bottom: -1px;
+		border-left: 2px solid #fff;
+		border-bottom: 2px solid #fff;
+		cursor: sw-resize;
+	}
+	.origin-w {
+		top: 50%;
+		left: 1px;
+		border-left: 2px solid #fff;
+		cursor: w-resize;
+	}
+}

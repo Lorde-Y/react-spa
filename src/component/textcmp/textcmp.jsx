@@ -8,7 +8,7 @@ class TextCmp extends Component {
 	}
 	render() {
 		return (
-			<div className='cmp-inner' style={this.props.innerStyle}>
+			<div className='cmp-inner' style={this.props.innerStyle} data-id={this.props.data.id}>
 				{this.props.data.text}
 			</div>
 		)

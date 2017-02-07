@@ -6,17 +6,17 @@ export default function Enhancer(Cmp) {
 			super(props);
 		}
 		render() {
-			const { style } = {...this.props.data};
+			const { style, id, type } = {...this.props.cmpData};
 			const { position, left, top, ...others } = {...style};
 			const outerStyle = {
 				position: position,
 				left: `${left}px`,
 				top: `${top}px`
-			}; 
+			};
 			return (
-				<div className={`wrapper-cmp cmp-${this.props.type}`} style={outerStyle}>
+				<div id={`CMP_${type}_${id}`}className={`wrapper-cmp cmp-${type}`} style={outerStyle}>
 					<Cmp
-						data={this.props.data}
+						data={this.props.cmpData}
 						innerStyle={{...others}}
 					/>
 				</div>
