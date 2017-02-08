@@ -15,16 +15,17 @@ function toUpdateCmp(state, action) {
 	let currCmp = { ...cmps[idx] };
 	const updateData = { ...action.data };
 	for (let key in updateData) {
-		if ({}.hasOwnProperty(currCmp, key)) {
+		if ({}.hasOwnProperty.call(currCmp, key)) {
 			if (typeof updateData[key] === 'object') {
 				currCmp[key] = {
 					...currCmp[key],
 					...updateData[key]
 				};
 			}else {
-				currCmp[key] = updateData[key]
+				currCmp[key] = updateData[key];
 			}
-		}else {
+		}
+		else {
 			currCmp[key] = updateData[key];
 		}
 	}

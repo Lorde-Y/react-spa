@@ -74,6 +74,7 @@ class Canvas extends Component {
 				updateCurrentCmp={this.props.updateCurrentCmp}
 				updateCmp={this.props.updateCmp}
 				currCmp={currCmp}
+				showResize={showResize}
 				data={this.props.data}
 			/>
 		)

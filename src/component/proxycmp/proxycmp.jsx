@@ -14,6 +14,7 @@ class ProxyCmp extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			startDoubleText: false,
 			isEditing: false
 		}
 	}
@@ -38,51 +39,38 @@ class ProxyCmp extends Component {
 		if (currentCmp && currentCmp.includes(cmpId)) {
 			return
 		}
-		const currCmp = cmpId ? [cmpId] : [];
-		if (currCmp.length === 0 ) {
-			return this.setState({
-				isEditing: false
-			}, ()=> {
-				const currDom = document.getElementById(`CMP_text_${currentCmp}`);
-				if (currDom) {
-					currDom.style.display = 'block';
-				}
-				
-				this.props.updateCurrentCmp(currCmp);
-			});
+		const currCmpIdArr = cmpId ? [cmpId] : [];
+		if (currCmpIdArr.length !== 0 ) {
+			return this.props.updateCurrentCmp(currCmpIdArr);
 		}
-		this.props.updateCurrentCmp(currCmp);
-	};
-
-	handleMouseDown = (e) => {
-		e.stopPropagation();
-	};
-
-	handleStart = ()=> {
-
-	};
-
-	handleDrag = ()=> {
-
-	};
-
-	handleStop = (position)=> {
-		const { currentCmp, cmps } = {...this.props.data};
-		const idx = cmps.findIndex( cmp => cmp.id === currentCmp[0]);
-		let { style } = {...cmps[idx]};
-		const updateStyle = {
-			style: {
-				...style,
-				left: style.left + position.x,
-				top: style.top + position.y
+		//点击的区域不是组件
+		this.setState({
+			startDoubleText: false,
+			isEditing: false
+		}, ()=> {
+			//如果是文字组件，之前隐藏的要显示出来
+			const currDom = document.getElementById(`CMP_text_${currentCmp}`);
+			if (currDom) {
+				currDom.style.display = 'block';
 			}
-		};
-		this.props.updateCmp(updateStyle);
+			this.props.updateCurrentCmp(currCmpIdArr);
+		});
 	};
 
-	handleTextEdit = (style)=> {
-		this.props.updateCmp(style);
+	handleTextEdit = (data)=> {
+		this.setState({
+			isEditing: true
+		}, ()=> {
+			this.props.updateCmp(data);
+		})
 	};
+
+	eventsMap() {
+		return {
+			mousemove: this.handleProxyMove,
+			mouseup: this.handleProxyUp
+		}
+	}
 
 	handleProxyMouseDown = (e) => {
 		e.stopPropagation();
@@ -101,13 +89,6 @@ class ProxyCmp extends Component {
 
 		addEventsToDocument(this.eventsMap())
 	};
-
-	eventsMap() {
-		return {
-			mousemove: this.handleProxyMove,
-			mouseup: this.handleProxyUp
-		}
-	}
 
 	handleProxyMove = (e)=> {
 		pauseEvent(e);
@@ -145,7 +126,6 @@ class ProxyCmp extends Component {
 		let { style } = {...this.props.currCmp};
 		const updateStyle = {
 			style: {
-				...style,
 				left: style.left + position.x,
 				top: style.top + position.y
 			}
@@ -153,18 +133,20 @@ class ProxyCmp extends Component {
 		this.props.updateCmp(updateStyle);
 	}
 
-
 	handleProxyDoubleClick = (e)=> {
 		const { type, id } = { ...this.props.currCmp };
+		if (type !== 'text') {
+			return
+		}
+		//双击之后，当前的文字组件设置为隐藏状态
 		const currDom = document.getElementById(`CMP_${type}_${id}`);
 		currDom.style.display = 'none';
 
-		this.setState({isEditing: true});
+		this.setState({startDoubleText: true});
 
 		setTimeout(()=> {
 			removeEventsFromDocument(this.eventsMap());
 		}, 0)
-
 	};
 
 	render() {
@@ -175,28 +157,25 @@ class ProxyCmp extends Component {
 			top: `${style.top + 76}px`,
 			width: style.width,
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
-		}
-		const active = this.props.active ? 'active' : '';
+		};
 		return (
 			<div 
-				className={`proxy ${active}`}  
+				className='proxy'  
 				style={proxyStyle}
 				id='proxy' 
 				onMouseDown={this.handleProxyMouseDown}
 				onDoubleClick={this.handleProxyDoubleClick}
 			>
 				<Resize
-					active={false}
-					position={{x:0,y:0}}
-					onDragStart={this.handleStart}
-					onDragMove={this.handleDrag}
-					onDragStop={this.handleStop}
-					onTextEdit={this.handleTextEdit}
+					active={this.props.showResize}
 					currCmp={this.props.currCmp}
 				/>
 				<ProxyText
+					startDoubleText={this.state.startDoubleText}
 					isEditing={this.state.isEditing}
+					handleTextEdit={this.handleTextEdit}
 					currCmp={this.props.currCmp}
+					updateCmp={this.props.updateCmp}
 				/>
 			</div>
 		)

@@ -14,12 +14,11 @@ class Resize extends Component {
 		const resizeStyle = {
 			width: style.width,
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
-		}
-		const active = this.props.active ? 'active' : '';
+		};
 		return (
 			<div 
 				id='proxy-resize' 
-				className={`proxy-resize ${active}`} 
+				className={`proxy-resize ${this.props.active ? 'active' : ''}`} 
 				style={resizeStyle}
 			>
 				<div className='handle-resize origin-nw' />

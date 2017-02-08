@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
+import { pauseEvent } from 'utils/events';
 
 import './proxytext.less';
 
-const EditText = ({isEditing, text, style})=> (
-	<div className={`cmp-inner ${isEditing}`} style={style}>
+const EditText = ({text, style})=> (
+	<div className={`cmp-inner edit`} style={style}>
 		{text}
 	</div>
 );
@@ -11,39 +12,34 @@ const EditText = ({isEditing, text, style})=> (
 class ProxyText extends Component {
 	constructor(props) {
 		super(props);
-		console.log(props)
 	}
 
 	handleTextMouseDown = (e)=> {
 		e.stopPropagation();
 	};
 
-	// handleKeyUp = (e)=> {
-	// 	pauseEvent(e);
-	// 	const proxyText = document.getElementById('proxy-text');
-	// 	const proxyInnerText = proxyText.querySelector('.cmp-inner');
-	// 	console.log(proxyInnerText.offsetHeight)
-	// 	const editText = proxyInnerText.innerText;
-	// 	const editHeight = proxyInnerText.offsetHeight;
-	// 	let cmpStyle = {
-	// 		style: {
-				
-	// 		}
-	// 	};
-	// 	let { type, text, style } = {...this.props.currCmp};
-	// 	if ( text !== editText) {
-	// 		cmpStyle.text = editText;
-	// 	}
-	// 	if ( editHeight !== style.height) {
-	// 		cmpStyle.style.height = editHeight;
-	// 	}
-	// 	console.log(cmpStyle)
-	// 	// this.props.onTextEdit(cmpStyle);
-	// 	// let { type, style } = {...this.props.currCmp};
-	// 	// console.log(this.props.)
-	// };
+	handleKeyUp = (e)=> {
+		pauseEvent(e);
+
+		const proxyText = document.getElementById('proxy-text');
+		const proxyInnerText = proxyText.querySelector('.cmp-inner');
+		const editText = proxyInnerText.innerText;
+		const editHeight = proxyInnerText.offsetHeight;
+		let cmpStyle = {
+			text: editText,
+			style: {
+				height: editHeight
+			}
+		};
+		let { type, text, style } = {...this.props.currCmp};
+		if ( text === editText) {
+			return
+		}
+		this.props.handleTextEdit(cmpStyle);
+	};
+
 	selectTextAll() {
-		if (this.props.isEditing) {
+		if (this.props.startDoubleText && !this.props.isEditing) {
 			setTimeout(()=> {
 				const proxyText = document.getElementById('proxy-text');
 				let proxyInnerText = proxyText.querySelector('.cmp-inner');
@@ -67,19 +63,18 @@ class ProxyText extends Component {
 			...style,
 			position: 'absolute',
 			left: 0,
-			top: 0
+			top: 0,
+			height: 'auto'
 		};
 		return (
 			<div 
 				className='proxy-text'
 				id='proxy-text'
-				// onKeyUp={this.handleKeyUp}
-				// onDoubleClick={this.handleDoubleClick}
+				onKeyUp={this.handleKeyUp}
 				onMouseDown={this.handleTextMouseDown}
 			>
-				{ this.props.isEditing &&
+				{ this.props.startDoubleText &&
 					<EditText
-						isEditing={false}
 						text={text}
 						style={style}
 					/>
