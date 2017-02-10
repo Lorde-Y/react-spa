@@ -9,13 +9,14 @@ import { addEventsToDocument } from 'utils/events';
 
 import Enhancer from 'component/enhancer';
 import TextCmp from 'component/textcmp';
+import BtnCmp from 'component/btncmp';
 
 import './canvas.less';
 
 const canvasCmps = {
 	text: Enhancer(TextCmp),
 	image: Enhancer(TextCmp),
-	btn: Enhancer(TextCmp)
+	btn: Enhancer(BtnCmp)
 };
 
 class Canvas extends Component {
@@ -39,14 +40,16 @@ class Canvas extends Component {
 	};
 
 	renderCmps() {
-		const { cmps } = { ...this.props.data };
+		const { currentCmp, cmps } = { ...this.props.data };
 		return cmps.map((item, id)=> {
 			const Cmp = canvasCmps[item.type];
+			const active = currentCmp[0] === item.id ? true : false;
 			return (
 				<Cmp
 					key={id}
 					type={item.type}
 					cmpData={item}
+					active={active}
 				/>
 			)
 		})

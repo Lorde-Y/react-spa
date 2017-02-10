@@ -25,7 +25,7 @@ const elementArr = [
 ];
 
 const ElementTypes = ({currType, typesArr, onClick}) => (
-	<ul>
+	<ul className='element-ul'>
 		{
 			typesArr.map((item, id)=> {
 				let type = item.type;

@@ -5,8 +5,12 @@ import Draggable from 'component/draggable';
 import Resize from 'component/resize';
 import ProxyText from 'component/proxytext';
 
-import { addEventsToDocument, removeEventsFromDocument, getMousePosition, pauseEvent } from 'utils/events';
-
+import { 
+	addEventsToDocument,
+	removeEventsFromDocument,
+	getMousePosition,
+	pauseEvent 
+} from 'utils/events';
 
 import './proxycmp.less';
 
@@ -29,6 +33,11 @@ class ProxyCmp extends Component {
 		}
 	}
 
+	/**
+	 * [handleDocumentMouseDown description]
+	 * @param  {[event]}
+	 * @description [点击文档区域，判断所点击的dom对象是否为组件]
+	 */
 	handleDocumentMouseDown = (e)=> {
 		const $target = e.target;
 		if ($target.parentNode === ReactDom.findDOMNode(this) || $target.parentNode.parentNode === ReactDom.findDOMNode(this)){
@@ -153,7 +162,7 @@ class ProxyCmp extends Component {
 		let { type, style } = {...this.props.currCmp};
 		const proxyStyle = {
 			position: style.position,
-			left: `${style.left + 66}px`,
+			left: `${style.left + 69}px`,
 			top: `${style.top + 76}px`,
 			width: style.width,
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
@@ -175,7 +184,6 @@ class ProxyCmp extends Component {
 					isEditing={this.state.isEditing}
 					handleTextEdit={this.handleTextEdit}
 					currCmp={this.props.currCmp}
-					updateCmp={this.props.updateCmp}
 				/>
 			</div>
 		)

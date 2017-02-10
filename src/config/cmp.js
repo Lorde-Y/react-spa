@@ -38,9 +38,8 @@ let btnCmp = {
 		...cmpStyle,
 		width: 80,
 		height: 30,
-		lineHeight: 1,
-		color: '#000',
-		fontSize: 16,
+		color: '#fff',
+		fontSize: 12,
 		textAlign: 'center',
 		background: '#ff8533'
 	}

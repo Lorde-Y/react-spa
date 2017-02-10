@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
 import { pauseEvent } from 'utils/events';
 
-import './proxytext.less';
+import TextCmp from 'component/textcmp';
 
-const EditText = ({text, style})=> (
-	<div className={`cmp-inner edit`} style={style}>
-		{text}
-	</div>
-);
+import './proxytext.less';
 
 class ProxyText extends Component {
 	constructor(props) {
@@ -39,6 +35,7 @@ class ProxyText extends Component {
 	};
 
 	selectTextAll() {
+		//if语句判断防止正在编辑文字的时候全选文字。
 		if (this.props.startDoubleText && !this.props.isEditing) {
 			setTimeout(()=> {
 				const proxyText = document.getElementById('proxy-text');
@@ -58,13 +55,17 @@ class ProxyText extends Component {
 	}
 
 	render() {
-		let { text, style } = {...this.props.currCmp};
+		let { text, style, id } = {...this.props.currCmp};
 		style = {
 			...style,
 			position: 'absolute',
 			left: 0,
 			top: 0,
 			height: 'auto'
+		};
+		const data = {
+			id,
+			text
 		};
 		return (
 			<div 
@@ -74,9 +75,9 @@ class ProxyText extends Component {
 				onMouseDown={this.handleTextMouseDown}
 			>
 				{ this.props.startDoubleText &&
-					<EditText
-						text={text}
-						style={style}
+					<TextCmp
+						data={data}
+						innerStyle={style}
 					/>
 				}
 				{ this.selectTextAll() }

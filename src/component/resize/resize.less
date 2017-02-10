@@ -1,21 +1,23 @@
-[contenteditable] {
-	user-select: none;
-}
 .proxy-resize {
 	&.active {
 		display: block;
 	}
-	outline: none;
-	outline-color: none;
 	display: none;
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 0;
 	height: 0;
-	border: 1px solid #FF8533;
+	outline: none;
 	cursor: move;
-	
+	background-image: 
+					linear-gradient(0deg, #838587 50%, white 50%),
+					linear-gradient(90deg, #838587 50%, white 50%),
+					linear-gradient(0deg, #838587 50%, white 50%),
+					linear-gradient(90deg, #838587 50%, white 50%);
+	background-position: 0 0, 0 0, 100% 0, 100% 100%;
+	background-size: 1px 6px, 6px 1px, 1px 6px, 6px 1px;
+	background-repeat: repeat-y, repeat-x, repeat-y, repeat-x;
 	.handle-resize {
 		position: absolute;
 		// top: 0;

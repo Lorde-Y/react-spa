@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 
-import { addEventsToDocument, removeEventsFromDocument, getMousePosition, pauseEvent } from 'utils/events';
+import { 
+	addEventsToDocument,
+	removeEventsFromDocument, 
+	getMousePosition, 
+	pauseEvent 
+} from 'utils/events';
 
 import './resize.less';
 
