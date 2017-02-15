@@ -1,5 +1,7 @@
 import { CREATE_CMP, UPDATE_CURRENT_CMP, UPDATE_CMP } from '../constants';
 
+import { undoable } from 'component/undoable';
+
 const initState = {
 	id: 1000,
 	currentCmp: [],
@@ -36,7 +38,7 @@ function toUpdateCmp(state, action) {
 	}
 }
 
-export function page(state=initState, action) {
+function reducerPage(state=initState, action) {
 	switch(action.type) {
 		case CREATE_CMP:
 			let { id, currentCmp, cmps } = { ...state };
@@ -63,4 +65,7 @@ export function page(state=initState, action) {
 		default:
 			return state;
 	}
-}
+};
+
+const page = undoable(reducerPage);
+export { page }

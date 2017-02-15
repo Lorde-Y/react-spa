@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import ProxyCmp from 'component/proxycmp';
+import SideTool from 'component/sidetool';
 
 import { addEventsToDocument } from 'utils/events';
 
@@ -40,7 +41,8 @@ class Canvas extends Component {
 	};
 
 	renderCmps() {
-		const { currentCmp, cmps } = { ...this.props.data };
+		let { currentCmp, cmps } = { ...this.props.data };
+		cmps = cmps ? cmps : [];
 		return cmps.map((item, id)=> {
 			const Cmp = canvasCmps[item.type];
 			const active = currentCmp[0] === item.id ? true : false;
@@ -56,7 +58,8 @@ class Canvas extends Component {
 	}
 
 	renderProxy() {
-		const { currentCmp, cmps } = {...this.props.data};
+		let { currentCmp, cmps } = {...this.props.data};
+		cmps = cmps ? cmps : [];
 		const idx = cmps.findIndex( cmp => cmp.id === currentCmp[0]);
 		const showResize = idx !== -1 ? true : false;
 		let currCmp = {
@@ -89,6 +92,7 @@ class Canvas extends Component {
 				<div className='canvas' id='canvas'>
 					{ this.renderCmps() }
 				</div>
+				<SideTool />
 				<div>
 					{ this.renderProxy() }
 				</div>

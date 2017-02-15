@@ -22,7 +22,6 @@ const CustomBtn = ({data, onClick})=> (
 class BtnPanel extends Component {
 	constructor(props) {
 		super(props);
-		console.log(props);
 	}
 
 	handleBtnClick = (data)=> {
