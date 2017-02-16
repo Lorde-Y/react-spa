@@ -159,7 +159,6 @@ class ProxyCmp extends Component {
 	};
 
 	render() {
-		console.log(1111111)
 		let { type, style } = {...this.props.currCmp};
 		const proxyStyle = {
 			position: style.position,
