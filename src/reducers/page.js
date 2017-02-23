@@ -1,15 +1,18 @@
 import { CREATE_CMP, UPDATE_CURRENT_CMP, UPDATE_CMP } from '../constants';
 
+import { deepCopy } from 'utils/common';
+
 import { undoable } from 'component/undoable';
 
 const initState = {
-	id: 1000,
+	cmpId: 1000,
 	currentCmp: [],
 	cmps: []
 };
 
 function toUpdateCmp(state, action) {
-	let { currentCmp, cmps } = {...state};
+	let newState = deepCopy({}, state);
+	let { currentCmp, cmps } = { ...newState };
 	const idx = cmps.findIndex(cmp => cmp.id === currentCmp[0]);
 	if (idx === -1) {
 		return state
@@ -38,34 +41,42 @@ function toUpdateCmp(state, action) {
 	}
 }
 
+function toCreateCmp(state, action) {
+	let { cmpId, currentCmp, cmps } = { ...state };
+	cmpId++;
+	let cmpData = {
+		id: cmpId,
+		...action.cmpData
+	};
+	let cmp = [];
+	cmp.push(cmpData)
+	return {
+		...state,
+		cmpId,
+		currentCmp: [cmpId],
+		cmps: state.cmps.concat(cmp)
+	}
+}
+
 function reducerPage(state=initState, action) {
-	switch(action.type) {
+	let newState = null;
+	switch (action.type) {
 		case CREATE_CMP:
-			let { id, currentCmp, cmps } = { ...state };
-			id++;
-			return {
-				...state,
-				id: id,
-				currentCmp: [id],
-				cmps: [...cmps, {
-					id,
-					...action.cmpData
-				}]
-			}
+			newState = toCreateCmp(state, action);
+			return newState
+		case UPDATE_CMP:
+			newState = toUpdateCmp(state, action);
+			return newState;
 		case UPDATE_CURRENT_CMP:
-			return {
+			newState = {
 				...state,
 				currentCmp: [...action.cmpId]
-			}
-		case UPDATE_CMP:
-			const updateCmp = toUpdateCmp(state, action);
-			return {
-				...updateCmp
-			}
+			};
+			return newState
 		default:
-			return state;
+			return state
 	}
 };
 
-const page = undoable(reducerPage);
+const page = undoable(initState, reducerPage);
 export { page }

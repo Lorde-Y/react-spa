@@ -20,3 +20,9 @@ export function updateCmp(data) {
 		data
 	}
 }
+
+export function undoAbleAction(type) {
+	return {
+		type: type
+	}
+}

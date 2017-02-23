@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
 
+import { createCmp, updateCurrentCmp, updateCmp } from 'action/page';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import Draggable from 'component/draggable';
 import Resize from 'component/resize';
 import ProxyText from 'component/proxytext';
@@ -12,9 +16,9 @@ import {
 	pauseEvent 
 } from 'utils/events';
 
-import './proxycmp.less';
+import './proxy.less';
 
-class ProxyCmp extends Component {
+class Proxy extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -118,8 +122,8 @@ class ProxyCmp extends Component {
 		const disX = position.x - this.mouseX;
 		const disY = position.y - this.mouseY;
 		
-		// this.currDom.style.left = `${parseInt(this.cmpLeft) + disX}px`;
-		// this.currDom.style.top = `${parseInt(this.cmpTop) + disY}px`;
+		this.currDom.style.left = `${parseInt(this.cmpLeft) + disX}px`;
+		this.currDom.style.top = `${parseInt(this.cmpTop) + disY}px`;
 
 		this.proxy.style.left = `${parseInt(this.proxyLeft) + disX}px`;
 		this.proxy.style.top = `${parseInt(this.proxyTop) + disY}px`;
@@ -144,16 +148,10 @@ class ProxyCmp extends Component {
 
 	updateCmpPosition(position) {
 		let { style } = {...this.props.currCmp};
-		console.log('moveing.........up...........')
-		// left = style.left
-		console.log(this.props.currCmp)
-		let left = style.left + position.x;
-		let top = style.top + position.y;
-		console.log(left, top)
 		const updateStyle = {
 			style: {
-				left,
-				top
+				left: style.left + position.x,
+				top: style.top + position.y
 			}
 		};
 		this.props.updateCmp(updateStyle);
@@ -175,15 +173,27 @@ class ProxyCmp extends Component {
 		}, 0)
 	};
 
-	render() {
-		let { type, style } = {...this.props.currCmp};
-		const proxyStyle = {
+	getCanvasArea() {
+		const { type, id, style } = { ...this.props.currCmp };
+		const canvasDom = document.getElementById('canvas');
+		let offsetLeft = null;
+		let offsetTop = null;
+		if (canvasDom) {
+			let { left, top } = canvasDom.getBoundingClientRect();
+			offsetLeft = left;
+			offsetTop = top;
+		}
+		return {
 			position: style.position,
-			left: `${style.left + 69}px`,
-			top: `${style.top + 76}px`,
+			left: offsetLeft ? offsetLeft + style.left : 0,
+			top: offsetTop ? offsetTop + style.top : 0,
 			width: style.width,
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
-		};
+		}
+	}
+
+	render() {
+		const proxyStyle = this.getCanvasArea();
 		return (
 			<div 
 				className='proxy'  
@@ -207,4 +217,33 @@ class ProxyCmp extends Component {
 	}
 }
 
-export default ProxyCmp
+function mapStateToProps(state) {
+	let { currentCmp, cmps } = {...state.page};
+	cmps = cmps ? cmps : [];
+	const idx = cmps.findIndex( cmp => cmp.id === currentCmp[0]);
+	const showResize = idx !== -1 ? true : false;
+	const defaultCmp = {
+		type: null,
+		style: {
+			position: 'absolute',
+			left: 0,
+			top: 0,
+			width: 0,
+			height: 0
+		}
+	};
+	return {
+		data: state.page,
+		currCmp: showResize ? cmps[idx] : defaultCmp,
+		showResize: showResize
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		updateCmp,
+		updateCurrentCmp
+	}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Proxy)

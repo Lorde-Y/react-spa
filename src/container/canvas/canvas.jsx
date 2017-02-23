@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import { createCmp, updateCurrentCmp, updateCmp } from 'action/page';
+import { createCmp, updateCurrentCmp, updateCmp, undoAbleAction } from 'action/page';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import ProxyCmp from 'component/proxycmp';
 import SideTool from 'component/sidetool';
 
 import { addEventsToDocument } from 'utils/events';
@@ -23,10 +22,6 @@ const canvasCmps = {
 class Canvas extends Component {
 	constructor(props) {
 		super(props);
-	}
-
-	componentDidMount() {
-
 	}
 
 	eventsMap() {
@@ -57,51 +52,22 @@ class Canvas extends Component {
 		})
 	}
 
-	renderProxy() {
-		let { currentCmp, cmps } = {...this.props.data};
-		cmps = cmps ? cmps : [];
-		const idx = cmps.findIndex( cmp => cmp.id === currentCmp[0]);
-		const showResize = idx !== -1 ? true : false;
-		let currCmp = {
-			type: null,
-			style: {
-				position: 'absolute',
-				left: 0,
-				top: 0,
-				width: 0,
-				height: 0
-			}
-		};
-		if (showResize) {
-			currCmp = cmps[idx];
-		}
-		return (
-			<ProxyCmp
-				updateCurrentCmp={this.props.updateCurrentCmp}
-				updateCmp={this.props.updateCmp}
-				currCmp={currCmp}
-				showResize={showResize}
-				data={this.props.data}
-			/>
-		)
-	}
-
 	render() {
 		return (
 			<div className='canvas-container' onMouseDown={this.handleCanvasMouseDown}>
 				<div className='canvas' id='canvas'>
 					{ this.renderCmps() }
 				</div>
-				<SideTool />
-				<div>
-					{ this.renderProxy() }
-				</div>
+				<SideTool
+					undoAble={this.props.data.undoAction}
+					undoAbleAction={this.props.undoAbleAction}
+				/>
 			</div>
 		)
 	}
 }
 
-function mapStateToProps(state={}) {
+function mapStateToProps(state) {
 	return {
 		data: state.page
 	}
@@ -111,7 +77,8 @@ function mapDispatchToProps(dispatch) {
 	return bindActionCreators({
 		createCmp,
 		updateCurrentCmp,
-		updateCmp
+		updateCmp,
+		undoAbleAction
 	}, dispatch)
 }
 
