@@ -5,9 +5,11 @@ import { createCmp, updateCurrentCmp, updateCmp } from 'action/page';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import Draggable from 'component/draggable';
 import Resize from 'component/resize';
 import ProxyText from 'component/proxytext';
+import Drag from 'utils/drag';
+
+import WindowMove from 'utils/windowmove';
 
 import { 
 	addEventsToDocument,
@@ -28,7 +30,7 @@ class Proxy extends Component {
 	}
 
 	componentDidMount() {
-		addEventsToDocument(this.eventsDocumentMap())
+		addEventsToDocument(this.eventsDocumentMap())		
 	}
 
 	eventsDocumentMap() {
@@ -42,22 +44,18 @@ class Proxy extends Component {
 	 * @param  {[event]}
 	 * @description [点击文档区域，判断所点击的dom对象是否为组件]
 	 */
-	handleDocumentMouseDown = (e)=> {
+	handleDocumentMouseDown = (e)=> {		
+		if (this.state.isResizing) {
+			return
+		}
 		const $target = e.target;
+		//点击当前代理(覆盖在当前cmp之上)
 		if ($target.parentNode === ReactDom.findDOMNode(this) || $target.parentNode.parentNode === ReactDom.findDOMNode(this)){
 			return
 		}
 		const cmpId = parseInt($target.getAttribute('data-id'));
-		const { currentCmp } = { ...this.props.data };
-		//点击当前cmp组件
-		if (currentCmp && currentCmp.includes(cmpId)) {
-			return
-		}
-		//点击其他cmp组件
-		if (cmpId) {
-			return this.props.updateCurrentCmp([cmpId]);
-		}else {
-			//点击的区域不是组件
+		//点击的区域不是组件
+		if (!cmpId) {
 			let { type, style, id } = {...this.props.currCmp};
 			//当该组件是 text组件，并且，是在编辑时，点击其他区域
 			if ( type === 'text' && this.state.startDoubleText) {
@@ -74,12 +72,25 @@ class Proxy extends Component {
 				});
 			}
 			//如果一直点击其它区域，不能一直更新currentcmp.
+			const { currentCmp } = { ...this.props.data };
 			if (currentCmp.length === 0) {
 				return
 			}
-			this.props.updateCurrentCmp([]);
+			return this.props.updateCurrentCmp([]);
 		}
+		//点击其他cmp组件
+		this.props.updateCurrentCmp([cmpId]);
+		this.setDragInit(e);
 	};
+
+	setDragInit(e) {
+		const position = getMousePosition(e);
+		const opts = {
+			movingFn: this.handleProxyMove.bind(this),
+			moveEndFn: this.handleProxyUp.bind(this)
+		};
+		WindowMove.initMoveOption(opts, position);
+	}
 
 	handleTextEdit = (data)=> {
 		this.setState({
@@ -96,66 +107,48 @@ class Proxy extends Component {
 		}
 	}
 
+	//当点击当前代理的时候重新去init,把刚新建的cmp加上move事件
 	handleProxyMouseDown = (e) => {
-		e.stopPropagation();
-		const position = getMousePosition(e);
-		this.mouseX = position.x;
-		this.mouseY = position.y;
-
-		const { type, id } = { ...this.props.currCmp };
-		this.currDom = document.getElementById(`CMP_${type}_${id}`);
-		this.cmpLeft = this.currDom.style.left.replace('px', '');
-		this.cmpTop = this.currDom.style.top.replace('px', '');
-
-		this.proxy = document.getElementById('proxy');
-		this.proxyLeft = this.proxy.style.left.replace('px', '');
-		this.proxyTop = this.proxy.style.top.replace('px', '');
-
-		addEventsToDocument(this.eventsMap())
+		this.setDragInit(e);
 	};
 
-	handleProxyMove = (e)=> {
-		pauseEvent(e);
+	handleProxyMove = (position)=> {
+		const { id, style, type } = { ...this.props.currCmp };
+
+		const $currDom = document.getElementById(`CMP_${type}_${id}`);
+		const $proxy = document.getElementById('proxy');
+
+		const { disX, disY, currDomX, currDomY, proxyX, proxyY } = { ...position };
+		$currDom.style.left = `${parseInt(currDomX) + disX}px`;
+		$currDom.style.top = `${parseInt(currDomY) + disY}px`;
 		
-		const position = getMousePosition(e);
 
-		const disX = position.x - this.mouseX;
-		const disY = position.y - this.mouseY;
-		
-		this.currDom.style.left = `${parseInt(this.cmpLeft) + disX}px`;
-		this.currDom.style.top = `${parseInt(this.cmpTop) + disY}px`;
+		$proxy.style.left = `${parseInt(proxyX) + disX}px`;
+		$proxy.style.top = `${parseInt(proxyY) + disY}px`;
 
-		this.proxy.style.left = `${parseInt(this.proxyLeft) + disX}px`;
-		this.proxy.style.top = `${parseInt(this.proxyTop) + disY}px`;
-
-		// console.log(disX,disY);
 		// if (Math.abs(position.x - this.mouseX) > 2 || Math.abs(position.y - this.mouseY) > 2) {
 		// 	this.setState({startDrag: true, dragPosition: position});
 		// }
 	};
 
-	handleProxyUp = (e)=> {
-		pauseEvent(e);
-		const position = getMousePosition(e);
-		const disX = position.x - this.mouseX;
-		const disY = position.y - this.mouseY;
-		this.updateCmpPosition({
-			x: position.x - this.mouseX,
-			y: position.y - this.mouseY
-		});
-		removeEventsFromDocument(this.eventsMap());
+	handleProxyUp = (position)=> {
+		this.updateCmpPosition(position);
 	};
 
-	updateCmpPosition(position) {
+	updateCmpPosition = (position)=> {
+		const { disX, disY } = { ...position };
+		if (disX === 0 && disY === 0) {
+			return;
+		}
 		let { style } = {...this.props.currCmp};
 		const updateStyle = {
 			style: {
-				left: style.left + position.x,
-				top: style.top + position.y
+				left: style.left + disX,
+				top: style.top + disY
 			}
 		};
 		this.props.updateCmp(updateStyle);
-	}
+	};
 
 	handleProxyDoubleClick = (e)=> {
 		const { type, id } = { ...this.props.currCmp };
@@ -191,6 +184,11 @@ class Proxy extends Component {
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
 		}
 	}
+	handleCmpResize = (flag)=> {
+		this.setState({
+			isResizing: flag
+		})
+	};
 
 	render() {
 		const proxyStyle = this.getCanvasArea();
@@ -205,6 +203,7 @@ class Proxy extends Component {
 				<Resize
 					active={this.props.showResize}
 					currCmp={this.props.currCmp}
+					handleCmpResize={this.handleCmpResize}
 				/>
 				<ProxyText
 					startDoubleText={this.state.startDoubleText}

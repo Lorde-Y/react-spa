@@ -5,8 +5,6 @@ export const UPDATE_CURRENT_CMP = 'UPDATE_CURRENT_CMP';
 
 export const UPDATE_CMP = 'UPDATE_CMP';
 
-export const TO_DO = 'TO_DO';
-
 export const UN_DO = 'UN_DO';
 
 export const RE_DO = 'RE_DO';
