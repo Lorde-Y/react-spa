@@ -54,7 +54,7 @@ const WindowMove = {
 		moveOption.currDomX = $currDom.style.left.replace('px', '');
 		moveOption.currDomY = $currDom.style.top.replace('px', '');
 
-		moveOption.proxyX = $proxy.style.left.replace('px', '');
+		moveOption.proxyX =  $proxy.style.left.replace('px', '');
 		moveOption.proxyY =  $proxy.style.top.replace('px', '');
 
 		moveOption.oriX = position.x;

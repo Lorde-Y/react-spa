@@ -7,9 +7,6 @@ import { bindActionCreators } from 'redux';
 
 import Resize from 'component/resize';
 import ProxyText from 'component/proxytext';
-import Drag from 'utils/drag';
-
-import WindowMove from 'utils/windowmove';
 
 import { 
 	addEventsToDocument,
@@ -17,6 +14,7 @@ import {
 	getMousePosition,
 	pauseEvent 
 } from 'utils/events';
+import WindowMove from 'utils/windowmove';
 
 import './proxy.less';
 
@@ -100,35 +98,24 @@ class Proxy extends Component {
 		})
 	};
 
-	eventsMap() {
-		return {
-			mousemove: this.handleProxyMove,
-			mouseup: this.handleProxyUp
-		}
-	}
-
 	//当点击当前代理的时候重新去init,把刚新建的cmp加上move事件
 	handleProxyMouseDown = (e) => {
 		this.setDragInit(e);
 	};
 
 	handleProxyMove = (position)=> {
-		const { id, style, type } = { ...this.props.currCmp };
+		const { id, type } = { ...this.props.currCmp };
 
 		const $currDom = document.getElementById(`CMP_${type}_${id}`);
 		const $proxy = document.getElementById('proxy');
 
 		const { disX, disY, currDomX, currDomY, proxyX, proxyY } = { ...position };
+
 		$currDom.style.left = `${parseInt(currDomX) + disX}px`;
 		$currDom.style.top = `${parseInt(currDomY) + disY}px`;
 		
-
 		$proxy.style.left = `${parseInt(proxyX) + disX}px`;
 		$proxy.style.top = `${parseInt(proxyY) + disY}px`;
-
-		// if (Math.abs(position.x - this.mouseX) > 2 || Math.abs(position.y - this.mouseY) > 2) {
-		// 	this.setState({startDrag: true, dragPosition: position});
-		// }
 	};
 
 	handleProxyUp = (position)=> {
@@ -137,6 +124,7 @@ class Proxy extends Component {
 
 	updateCmpPosition = (position)=> {
 		const { disX, disY } = { ...position };
+		//点击后，但是没有移动，不更新状态
 		if (disX === 0 && disY === 0) {
 			return;
 		}
@@ -160,10 +148,6 @@ class Proxy extends Component {
 		currDom.style.display = 'none';
 
 		this.setState({startDoubleText: true});
-
-		setTimeout(()=> {
-			removeEventsFromDocument(this.eventsMap());
-		}, 0)
 	};
 
 	getCanvasArea() {
@@ -184,6 +168,7 @@ class Proxy extends Component {
 			height: style.height !== 'auto' ? style.height : type === 'text' ? style.fontSize : style.height
 		}
 	}
+
 	handleCmpResize = (flag)=> {
 		this.setState({
 			isResizing: flag
